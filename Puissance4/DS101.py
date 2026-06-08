@@ -28,7 +28,7 @@ def utility(mat, last_coup):
         [(0, 1)],                 
         [(-1, 0), (1, 0)],        
         [(-1, 1), (1, -1)], 
-        [(1, -1), (-1, 1)]      
+        [(-1, -1), (1, 1)]      
     ]
     for axes in directions:
         affile = 1
@@ -80,7 +80,7 @@ def score(mat):
     ROWS = 6
 
     for r in range(ROWS):
-        if mat[3][r] == bot_piece:
+        if mat[r][3] == bot_piece:
             score += 30
 
     def evaluer_compteurs(b_count, o_count):
@@ -91,7 +91,7 @@ def score(mat):
         elif b_count == 2 and o_count == 0:
             return 10
         elif o_count == 3 and b_count == 0:
-            return -80
+            return -10000
         elif o_count == 4:
             return -100000
         return 0
