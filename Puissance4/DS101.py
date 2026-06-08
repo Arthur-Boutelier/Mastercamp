@@ -1,4 +1,4 @@
-def IA_Decision(mat, profondeur=6):
+def IA_Decision(mat, profondeur=8):
     meilleure_action = None
     alpha = -float('inf')
     beta = float('inf')
@@ -148,16 +148,11 @@ def score(mat):
     return score
 
 def Result(mat, action, joueur):
-    i = 0
-    new_mat = []
-    while i < 6 and  mat[i][action] == 0:
-       i += 1
-    for ligne in range(len(mat)):
-        new_ligne = []
-        for col in range(len(mat[0])):
-            new_ligne.append(mat[ligne][col])
-        new_mat.append(new_ligne)
-    new_mat[i+1][action] = joueur 
+    new_mat = [ligne[:] for ligne in mat]
+    for i in range(5, -1, -1):
+        if new_mat[i][action] == 0:
+            new_mat[i][action] = joueur
+            return new_mat
     return new_mat
 
 def max_value(board, profondeur, alpha, beta, action):
