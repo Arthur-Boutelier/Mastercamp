@@ -203,28 +203,23 @@ def actions(board):
 
 
 def afficher_grille(board):
-    # Parcourt chaque ligne du plateau, de haut en bas
     for row in board:
         ligne_str = "|"
         for cell in row:
             if cell == 1:
                 ligne_str += "X|"
             elif cell == -1:
-                ligne_str += "O|"  # Tu peux mettre 'o' ou '0' selon ta préférence
+                ligne_str += "O|" 
             else:
                 ligne_str += " |"
         print(ligne_str)
         
-    # Calcule le nombre de colonnes en regardant la taille de la première ligne
     nb_cols = len(board[0])
     
-    # Affiche la ligne de tirets (2 tirets par case + 1 pour fermer)
     print("-" * (nb_cols * 2 + 1))
     
-    # Affiche la ligne des indices
     indices_str = "|"
     for i in range(nb_cols):
-        # i % 10 permet d'afficher 0 pour 10, 1 pour 11, etc., pour garder une seule largeur
         indices_str += f"{i % 10}|"
         
     print(indices_str)
