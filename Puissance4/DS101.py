@@ -28,7 +28,7 @@ def utility(mat, last_coup):
         [(0, 1)],                 
         [(-1, 0), (1, 0)],        
         [(-1, 1), (1, -1)], 
-        [(-1, 1), (1, -1)]      
+        [(1, -1), (-1, 1)]      
     ]
     for axes in directions:
         affile = 1
