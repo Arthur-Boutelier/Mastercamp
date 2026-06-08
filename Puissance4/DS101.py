@@ -1,4 +1,4 @@
-def IA_Decision(mat, profondeur=8):
+def IA_Decision(mat, profondeur=7):
     meilleure_action = None
     alpha = -float('inf')
     beta = float('inf')
@@ -27,19 +27,20 @@ def utility(mat, last_coup):
     directions = [
         [(0, 1)],                 
         [(-1, 0), (1, 0)],        
-        [(-1, 1), (1, -1)]        
+        [(-1, 1), (1, -1)], 
+        [(-1, 1), (1, -1)]      
     ]
     for axes in directions:
         affile = 1
         for d_col, d_row in axes:
             c = col + d_col
             r = row + d_row
-            while 0 <= c < COLS and 0 <= r < ROWS and mat[c][r] == last_joueur:
+            while 0 <= c < COLS and 0 <= r < ROWS and mat[r][c] == last_joueur:
                 affile += 1
                 c += d_col
                 r += d_row   
         if affile >= 4:
-            return last_joueur
+            return 100000 * last_joueur
     return 0
 
 def Terminal_Test(grille):
@@ -91,6 +92,8 @@ def score(mat):
             return 10
         elif o_count == 3 and b_count == 0:
             return -80
+        elif o_count == 4:
+            return -100000
         return 0
 
     for r in range(ROWS):
@@ -98,7 +101,7 @@ def score(mat):
             bot_count = 0
             opp_count = 0
             for i in range(4):
-                val = mat[c+i][r]
+                val = mat[r][c+i]
                 if val == bot_piece: bot_count += 1
                 elif val == opp_piece: opp_count += 1
             
@@ -111,7 +114,7 @@ def score(mat):
             bot_count = 0
             opp_count = 0
             for i in range(4):
-                val = mat[c][r+i]
+                val = mat[r+i][c]
                 if val == bot_piece: bot_count += 1
                 elif val == opp_piece: opp_count += 1
                 
@@ -124,7 +127,7 @@ def score(mat):
             bot_count = 0
             opp_count = 0
             for i in range(4):
-                val = mat[c+i][r+i]
+                val = mat[r+i][c+i]
                 if val == bot_piece: bot_count += 1
                 elif val == opp_piece: opp_count += 1
                 
@@ -137,7 +140,7 @@ def score(mat):
             bot_count = 0
             opp_count = 0
             for i in range(4):
-                val = mat[c+i][r-i]
+                val = mat[r-i][c+i]
                 if val == bot_piece: bot_count += 1
                 elif val == opp_piece: opp_count += 1
                 
@@ -225,4 +228,3 @@ def afficher_grille(board):
         indices_str += f"{i % 10}|"
         
     print(indices_str)
-
