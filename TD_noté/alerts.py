@@ -15,7 +15,7 @@ destinataires_par_produit = {
 
 def nettoyer_liste(valeur):
     """
-    Cette fonction sert à nettoyer les champs comme Editeur ou Produit.
+    Cette fonction nettoie les champs comme Produit ou Editeur.
     Par exemple, si on a "Linux, Linux", on garde seulement "Linux".
     """
     elements = str(valeur).split(",")
@@ -23,6 +23,24 @@ def nettoyer_liste(valeur):
     elements_uniques = list(dict.fromkeys(elements))
 
     return ", ".join(elements_uniques)
+
+
+def raccourcir_versions(versions, max_versions=5):
+    """
+    Cette fonction rend la liste des versions plus lisible dans le mail.
+    On enlève les doublons et on affiche seulement quelques versions.
+    """
+    versions = str(versions).split(",")
+    versions = [v.strip() for v in versions if v.strip() != ""]
+
+    versions_uniques = list(dict.fromkeys(versions))
+
+    if len(versions_uniques) > max_versions:
+        versions_affichees = ", ".join(versions_uniques[:max_versions])
+        nb_restantes = len(versions_uniques) - max_versions
+        return f"{versions_affichees}... (+ {nb_restantes} autres, voir lien solution)"
+
+    return ", ".join(versions_uniques)
 
 
 def trouver_destinataires(row):
@@ -52,24 +70,6 @@ def trouver_destinataires(row):
     return list(set(destinataires)), produits_detectes
 
 
-def raccourcir_versions(versions, max_versions=5):
-    """
-    Cette fonction rend la liste des versions plus lisible dans le mail.
-    On enlève les doublons et on affiche seulement quelques versions.
-    """
-    versions = str(versions).split(",")
-    versions = [v.strip() for v in versions if v.strip() != ""]
-
-    versions_uniques = list(dict.fromkeys(versions))
-
-    if len(versions_uniques) > max_versions:
-        versions_affichees = ", ".join(versions_uniques[:max_versions])
-        nb_restantes = len(versions_uniques) - max_versions
-        return f"{versions_affichees}... (+ {nb_restantes} autres, voir lien solution)"
-
-    return ", ".join(versions_uniques)
-
-
 def filtrer_alertes_recentes(df, nb_jours=90):
     """
     Cette fonction garde seulement les vulnérabilités récentes et importantes.
@@ -94,30 +94,25 @@ def filtrer_alertes_recentes(df, nb_jours=90):
     return alertes
 
 
-def trouver_cve_similaires(row, df, n=2, fenetre_jours=90):
+def trouver_cve_similaires(row, df, n=2):
     """
-    Cette fonction cherche des CVE similaires à l'alerte actuelle.
-    Pour que ce soit pertinent, on garde seulement les CVE du même cluster KMeans
-    et avec une date proche de l'alerte actuelle.
+    Cette fonction cherche les CVE les plus récentes dans le même cluster KMeans.
+    On ne prend pas la CVE actuelle et on évite de prendre des CVE plus récentes que l'alerte.
     """
     df = df.copy()
     df["Date"] = pd.to_datetime(df["Date"])
 
-    date_min = row["Date"] - pd.Timedelta(days=fenetre_jours)
-    date_max = row["Date"] + pd.Timedelta(days=fenetre_jours)
-
     similaires = df[
         (df["cluster"] == row["cluster"]) &
         (df["CVE"] != row["CVE"]) &
-        (df["Date"] >= date_min) &
-        (df["Date"] <= date_max)
+        (df["Date"] <= row["Date"])
     ].copy()
 
-    similaires["ecart_jours"] = (similaires["Date"] - row["Date"]).abs().dt.days
+    similaires = similaires.drop_duplicates(subset=["CVE"])
 
     similaires = similaires.sort_values(
-        by=["ecart_jours", "risk_score"],
-        ascending=[True, False]
+        by=["Date", "risk_score"],
+        ascending=[False, False]
     )
 
     return similaires[["CVE", "Date", "Lien CVE"]].head(n)
@@ -127,7 +122,7 @@ def creer_mail_alerte(row, df):
     """
     Cette fonction crée le contenu du mail d'alerte.
     Le mail n'est pas vraiment envoyé, on prépare seulement le sujet et le texte.
-    On ajoute aussi deux CVE similaires à la fin.
+    On ajoute aussi deux CVE récentes du même cluster à la fin.
     """
     destinataires, produits_detectes = trouver_destinataires(row)
     cve_similaires = trouver_cve_similaires(row, df)
@@ -167,11 +162,11 @@ Recommandation :
 Il est conseillé de vérifier rapidement si le produit concerné est utilisé dans le système d'information.
 Si c'est le cas, il faut consulter la solution proposée et appliquer les correctifs disponibles.
 
-CVE similaires récentes identifiées avec KMeans :
+Deux CVE récentes du même cluster KMeans :
 """
 
     if len(cve_similaires) == 0:
-        body += "- Aucune CVE similaire récente trouvée dans le même cluster.\n"
+        body += "- Aucune CVE récente trouvée dans le même cluster.\n"
     else:
         for _, cve in cve_similaires.iterrows():
             body += f"- {cve['CVE']} | Date : {cve['Date'].date()} | Lien : {cve['Lien CVE']}\n"
