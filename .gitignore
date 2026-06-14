@@ -5,3 +5,8 @@ TD_noté/data/mitre
 venv/
 test.csv
 __pycache__/
+TD_noté/data/dataset_with_cvss_completed.csv
+TD_noté/data/dataset_with_cvss_and_epss_completed.csv
+TD_noté/data/dataset_completed_final.csv
+TD_noté/data/final_risk_prioritization.csv
+TD_noté/models/*.pkl
