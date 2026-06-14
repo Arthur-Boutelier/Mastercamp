@@ -3,6 +3,10 @@ from pathlib import Path
 import requests
 import json
 import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
 
 def create_dico_ANSSI(json_anssi):
     anssi_line = {}
@@ -188,11 +192,8 @@ def get_remediations(json_cve_mitre):
     
     return str_liens
         
-                        
-"""df = Initialisation_df()
-df.to_csv("./data/test.csv", sep=";", index=False)"""
 
-df = pd.read_csv("./data/test.csv", sep=";")
+
     
     
     
