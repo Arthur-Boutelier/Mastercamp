@@ -26,6 +26,9 @@ Le projet permet de :
 
 ```text
 .
+├── data/
+│   └── dataset_complet.csv
+│
 ├── model/
 │   ├── OneHot_encoder.pkl
 │   ├── TfIdf_vectorizer_GBR.pkl
@@ -33,6 +36,8 @@ Le projet permet de :
 │   ├── model_cvss.pkl
 │   ├── model_epss.pkl
 │   └── model_kmean.pkl
+│
+├── mails/
 │
 ├── KMeans.ipynb
 ├── ML.py
@@ -257,7 +262,6 @@ Le projet peut générer :
 * Ajouter davantage de produits surveillés.
 * Améliorer la gestion des erreurs API.
 * Intégrer les résultats du clustering dans les mails d’alerte.
-* Ajouter les scores complétés par les modèles directement dans les notifications.
 * Déployer la veille comme un service automatique.
 
 
