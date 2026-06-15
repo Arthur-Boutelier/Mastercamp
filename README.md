@@ -126,7 +126,7 @@ Pour la partie Machine Learning, nous utilisons :
 
 * `numpy` pour certains calculs numériques 
 * `scikit-learn` pour préparer les données, entraîner les modèles et les évaluer 
-* `joblib` et `pickle` pour sauvegarder ou charger les modèles entraînés
+* `pickle` pour sauvegarder ou charger les modèles entraînés
 
 Pour les visualisations, nous utilisons :
 
@@ -135,11 +135,12 @@ Pour les visualisations, nous utilisons :
 Les bibliothèques à installer sont :
 
 ```bash
-pip install pandas numpy requests feedparser scikit-learn matplotlib joblib
+pip install pandas numpy requests feedparser scikit-learn matplotlib
 ```
 
 Les bibliothèques `json`, `os`, `pathlib`, `re`, `time` et `pickle` sont déjà incluses avec Python. Elles n’ont donc pas besoin d’être installées séparément.
 
+## Utilisation
 
 ### Lancer la partie Machine Learning
 
@@ -156,14 +157,13 @@ Elle permet de :
 ### Lancer une vérification ponctuelle du flux RSS
 
 ```python
-import alerting
+from alert import check_rss_and_generate_mails
+from application import destinataires_par_produit
 
-created_files = alerting.check_rss_and_generate_mails(
-    alerting.destinataires_par_produit,
-    max_bulletins=2
-)
+created_files = check_rss_and_generate_mails(destinataires_par_produit)
 
 created_files
+
 ```
 
 Les fichiers générés sont enregistrés dans :
@@ -246,10 +246,10 @@ Bonjour,
 
 Le projet peut générer :
 
-* `test.csv` : dataset consolidé 
-* des fichiers `.pkl` dans `models/` : modèles et encodeurs sauvegardés 
-* des fichiers `.txt` dans `mails/` : mails d’alerte générés 
-* `seen_anssi_ids.json` : fichier mémoire des bulletins déjà traités
+* `dataset_complet.csv` : dataset complet contenant les avis et alertes ANSSI enrichis
+* des fichiers `.pkl` dans `model/` : modèles, encodeurs et vectorizers sauvegardés
+* des fichiers `.txt` dans `mails/` : mails d’alerte générés
+* `clusters_kmeans.png` : visualisation des clusters obtenus avec KMeans
 
 ## Limites et améliorations possibles
 
