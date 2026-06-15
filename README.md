@@ -42,37 +42,68 @@ Le projet permet de :
 ├── clusters_kmeans.png
 ├── gestionDataframe.py
 └── main.ipynb
+```
 
 ## Rôle des fichiers principaux
 
-### `functions.py`
+### `gestionDataframe.py`
 
-Contient les fonctions d’extraction et d’enrichissement des données.
+Ce fichier contient les fonctions qui permettent de récupérer, enrichir et construire le dataset principal.
 
-Il permet de lire les bulletins ANSSI, récupérer les CVE, puis enrichir chaque CVE avec les données MITRE et FIRST EPSS.
+Il permet de lire les fichiers JSON des avis et alertes ANSSI, d’extraire les CVE associées, puis d’enrichir chaque CVE avec les données MITRE et FIRST EPSS.
 
-### `utils.py`
+Il récupère notamment le CVSS, l’EPSS, le CWE, l’éditeur, le produit, les versions affectées et les liens de correction.
 
-Contient les fonctions liées à la partie Machine Learning.
+### `ML.py`
 
-Il permet de préparer les données, encoder les variables, entraîner les modèles, évaluer les résultats et compléter les valeurs CVSS et EPSS manquantes.
+Ce fichier contient les fonctions liées à la partie Machine Learning.
 
-### `alerting.py`
+Il permet d’encoder le dataset, de transformer les variables catégorielles avec `OneHotEncoder`, de transformer les textes avec `TfidfVectorizer`, puis de charger les modèles sauvegardés dans le dossier `model/`.
 
-Contient les fonctions liées aux alertes.
+Il sert aussi à prédire les valeurs CVSS et EPSS manquantes, et à calculer un score de risque.
 
-Il permet de lire le flux RSS ANSSI, détecter les nouveaux bulletins, choisir les destinataires concernés et générer les mails sous forme de fichiers `.txt`.
+### `alert.py`
+
+Ce fichier contient la partie alerte du projet.
+
+Il lit le flux RSS de l’ANSSI, détecte les nouveaux avis ou alertes, puis vérifie s’ils sont déjà présents dans `dataset_complet.csv`.
+
+Lorsqu’un nouveau bulletin est trouvé, le programme récupère les CVE associées, enrichit les données avec `gestionDataframe.py`, complète les valeurs CVSS et EPSS avec les modèles de `ML.py`, ajoute les nouvelles lignes au dataset, puis génère des fichiers `.txt` correspondant aux mails d’alerte.
 
 ### `application.py`
 
-Fichier principal permettant de lancer la veille en continu.
+Ce fichier est le point d’entrée de l’application.
 
-Il utilise les fonctions de `alerting.py` pour vérifier régulièrement le flux RSS ANSSI et générer automatiquement les fichiers d’alerte lorsqu’un nouveau bulletin est détecté.
+Il lance une boucle infinie qui vérifie le flux RSS de l’ANSSI toutes les 10 minutes. À chaque vérification, il appelle la fonction `check_rss_and_generate_mails()` du fichier `alert.py`.
 
-### `notebook.ipynb`
+### `main.ipynb`
 
-Présente les étapes d’analyse du projet : chargement du dataset, visualisations, Machine Learning, évaluation des modèles et interprétation des résultats.
+Ce notebook est le notebook principal du projet.
 
+Il regroupe les étapes importantes : chargement du dataset, préparation des données, visualisations, entraînement des modèles, évaluation, clustering KMeans et sauvegarde du dataset final.
+
+### `KMeans.ipynb`
+
+Ce notebook contient la partie clustering avec `KMeans`.
+
+Il permet de regrouper les vulnérabilités similaires dans différents clusters et de visualiser les résultats.
+
+### `clusters_kmeans.png`
+
+Ce fichier est une image générée à partir du clustering KMeans.
+
+Elle permet de visualiser les groupes de vulnérabilités obtenus.
+
+### `model/`
+
+Ce dossier contient les modèles, encodeurs et vectorizers sauvegardés :
+
+- `OneHot_encoder.pkl` : encodeur des variables catégorielles ;
+- `TfIdf_vectorizer_GBR.pkl` : vectorizer TF-IDF utilisé pour les modèles de régression ;
+- `TfIdf_vectorizer_KM.pkl` : vectorizer TF-IDF utilisé pour KMeans ;
+- `model_cvss.pkl` : modèle de prédiction du CVSS ;
+- `model_epss.pkl` : modèle de prédiction de l’EPSS ;
+- `model_kmean.pkl` : modèle KMeans sauvegardé.
 
 ## Bibliothèques utilisées
 
