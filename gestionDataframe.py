@@ -7,6 +7,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
+import time
 
 def create_dico_ANSSI(json_anssi):
     anssi_line = {}
@@ -38,6 +39,7 @@ def create_dico_CVE(CVE_dict):
         "CVE" : nom_cve,
         "Description CVE" : get_description_cve(json_cve_mitre),
         "CVSS" : base_score,
+        "CVSS prédite" : base_score,
         "Base severity" : base_severity,
         "Vecteur de l'attaque" : attack_vector,
         "Complexité de l'attaque" : attack_complexity,
@@ -49,6 +51,7 @@ def create_dico_CVE(CVE_dict):
         "CWE" : cwe,
         "Description CWE" : description,
         "EPSS" : get_epss(json_cve_first),
+        "EPSS prédite" : get_epss(json_cve_first),
         "Lien CVE" : CVE_dict["url"],
         "Lien solution" : get_remediations(json_cve_mitre),
         "Editeur" : ", ".join([element.get("vendor", "Unknow") for element in json_cve_mitre["containers"]["cna"].get("affected", {})]),
@@ -59,10 +62,9 @@ def create_dico_CVE(CVE_dict):
 
 def Initialisation_df():
     lignes = []
-    colonne_name = ["ID ANSSI", "Titre ANSSI", "Type", "Date", "CVE", "Description CVE", "CVSS", "Base severity", "Vecteur de l'attaque", "Complexité de l'attaque", "Privileges requis", "Action utilisateur", "Impact sur la confidentialité", "Impact sur l'intégrité", "Impact sur la disponibilité", "CWE", "EPSS", "Lien CVE", "Lien solution", "Description CWE", "Editeur", "Produit", "Versions affectées"]
+    colonne_name = ["ID ANSSI", "Titre ANSSI", "Type", "Date", "CVE", "Description CVE", "CVSS", "CVSS prédite", "Base severity", "Vecteur de l'attaque", "Complexité de l'attaque", "Privileges requis", "Action utilisateur", "Impact sur la confidentialité", "Impact sur l'intégrité", "Impact sur la disponibilité", "CWE", "EPSS", "EPSS prédite", "Lien CVE", "Lien solution", "Description CWE", "Editeur", "Produit", "Versions affectées"]
     tab_alertes = os.listdir("./data/alertes")
     for fichier_anssi in tab_alertes:
-        print(fichier_anssi)
         json_anssi = obtenir_json(fichier_anssi, "alerte")
         dico_anssi, tab_cve = create_dico_ANSSI(json_anssi)
         for cve in tab_cve:
@@ -72,7 +74,6 @@ def Initialisation_df():
                 lignes.append(new_ligne)
     tab_avis = os.listdir("./data/Avis")
     for fichier_anssi in tab_avis:
-        print(fichier_anssi)
         json_anssi = obtenir_json(fichier_anssi, "avis")
         dico_anssi, tab_cve = create_dico_ANSSI(json_anssi)
         for cve in tab_cve:
@@ -112,6 +113,7 @@ def obtenir_json(fichier_name, type_recherche):
     if  not dico_path[type_recherche].is_dir() or fichier_name not in os.listdir(dico_path[type_recherche]):
         response = requests.get(dico_url[type_recherche])
         json_fichier = response.json()
+        time.sleep(1)
     else:
         f = open(f'{dico_path[type_recherche]}/{fichier_name}', 'r')
         json_fichier = json.load(f)
