@@ -1,10 +1,5 @@
 # Projet ANSSI -  Analyse des Avis et Alertes ANSSI avec Enrichissement des CVE
 
-## Membres du Groupe :
-- Arthur BOUTELIER
-- Raphael BILLY
-- Thomas BOTTALICO
-- Baptiste BERTRAND
 ## Objectif du projet
 
 Le but de ce projet est d’automatiser l’analyse des avis et alertes publiés par l’ANSSI / CERT-FR.
