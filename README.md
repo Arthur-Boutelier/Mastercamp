@@ -86,29 +86,42 @@ Il utilise les fonctions de `alerting.py` pour vérifier régulièrement le flux
 
 Présente les étapes d’analyse du projet : chargement du dataset, visualisations, Machine Learning, évaluation des modèles et interprétation des résultats.
 
-## Bibliothèques utilisées et installation
 
-Le projet utilise plusieurs bibliothèques Python pour l’extraction des données, l’enrichissement des CVE, l’analyse, le Machine Learning et la génération d’alertes.
+## Bibliothèques utilisées
 
-### Bibliothèques à installer
+Le projet utilise plusieurs bibliothèques Python.
 
-Les bibliothèques suivantes doivent être installées avant de lancer le projet :
+Pour l’extraction et l’enrichissement des données, nous utilisons :
+
+* `pandas` pour créer et manipuler les datasets ;
+* `requests` pour récupérer les données depuis les API ANSSI, MITRE et FIRST EPSS ;
+* `json` pour lire et écrire les fichiers JSON ;
+* `os` et `pathlib` pour gérer les fichiers et les chemins.
+
+Pour la lecture du flux RSS et le système d’alerte, nous utilisons :
+
+* `feedparser` pour lire le flux RSS de l’ANSSI ;
+* `re` pour récupérer les identifiants ANSSI dans les liens ;
+* `time` pour faire tourner la veille en boucle avec un délai entre chaque vérification.
+
+Pour la partie Machine Learning, nous utilisons :
+
+* `numpy` pour certains calculs numériques ;
+* `scikit-learn` pour préparer les données, entraîner les modèles et les évaluer ;
+* `joblib` et `pickle` pour sauvegarder ou charger les modèles entraînés.
+
+Pour les visualisations, nous utilisons :
+
+* `matplotlib` pour créer les graphiques dans le notebook.
+
+Les bibliothèques à installer sont :
 
 ```bash
 pip install pandas numpy requests feedparser scikit-learn matplotlib joblib
-
-## Utilisation
-
-### Générer le dataset consolidé
-
-```python
-from functions import Initialisation_df
-
-df = Initialisation_df()
-df.to_csv("./data/test.csv", sep=";", index=False)
 ```
 
-Le fichier `test.csv` contient les bulletins ANSSI enrichis avec les informations CVE.
+Les bibliothèques `json`, `os`, `pathlib`, `re`, `time` et `pickle` sont déjà incluses avec Python. Elles n’ont donc pas besoin d’être installées séparément.
+
 
 ### Lancer la partie Machine Learning
 
