@@ -164,13 +164,33 @@ Le programme vérifie régulièrement le flux RSS ANSSI. Lorsqu’un nouveau bul
 
 ## Machine Learning
 
-Deux modèles de régression sont utilisés.
+Nous avons ajouté une partie Machine Learning pour compléter certaines informations manquantes dans le dataset et pour mieux analyser les vulnérabilités.
 
-Le premier modèle sert à compléter les valeurs CVSS manquantes. Le CVSS est une note entre 0 et 10 qui représente la gravité technique d’une vulnérabilité.
+### Modèles supervisés
 
-Le second modèle sert à compléter les valeurs EPSS manquantes. L’EPSS est une valeur entre 0 et 1 qui représente la probabilité qu’une vulnérabilité soit exploitée.
+Pour les modèles supervisés, nous avons utilisé `GradientBoostingRegressor`.
 
-Ces modèles ne remplacent pas les scores officiels. Ils permettent surtout de compléter le dataset lorsque certaines informations sont absentes.
+Ce modèle nous sert à prédire des valeurs numériques. Dans notre cas, nous l’avons utilisé pour compléter :
+
+* les valeurs CVSS manquantes ;
+* les valeurs EPSS manquantes.
+
+Pour vérifier si les modèles donnent des résultats corrects, nous avons utilisé trois métriques :
+
+* `MAE` : l’erreur moyenne entre la vraie valeur et la valeur prédite ;
+* `MSE` : une erreur moyenne qui pénalise davantage les grosses erreurs ;
+* `R²` : un score qui permet de voir si le modèle explique bien les données.
+
+L’objectif n’est pas de remplacer les scores officiels, mais plutôt de compléter le dataset quand certaines valeurs sont absentes.
+
+### Modèle non supervisé
+
+Nous avons aussi utilisé `KMeans` pour faire du clustering.
+
+Le but est de regrouper les vulnérabilités qui se ressemblent. Cela permet d’avoir une meilleure vision des différents types de vulnérabilités présentes dans le dataset.
+
+Ces clusters peuvent ensuite être utilisés pour enrichir l’analyse ou pour ajouter des informations supplémentaires dans les alertes.
+
 
 ## Système d’alerte
 
