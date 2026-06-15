@@ -17,15 +17,15 @@ Le projet contient aussi une partie de Data Visualisation afin de mieux visualis
 
 Le projet permet de :
 
-* récupérer les avis et alertes ANSSI ;
-* extraire les CVE de chaque bulletin ;
-* enrichir les CVE avec les données MITRE et FIRST EPSS ;
-* construire un dataset consolidé au format CSV ;
-* analyser et visualiser les vulnérabilités ;
-* compléter les valeurs CVSS et EPSS manquantes avec des modèles de régression ;
-* détecter de nouveaux bulletins via le flux RSS ANSSI ;
-* générer des alertes personnalisées selon les produits ou éditeurs concernés ;
-* créer des fichiers `.txt` simulant des emails d’alerte.
+* récupérer les avis et alertes ANSSI 
+* extraire les CVE de chaque bulletin 
+* enrichir les CVE avec les données MITRE et FIRST EPSS 
+* construire un dataset consolidé au format CSV 
+* analyser et visualiser les vulnérabilités 
+* compléter les valeurs CVSS et EPSS manquantes avec des modèles de régression 
+* détecter de nouveaux bulletins via le flux RSS ANSSI 
+* générer des alertes personnalisées selon les produits ou éditeurs concernés 
+* créer des fichiers `.txt` simulant des emails d’alerte
 
 ## Structure du projet
 
@@ -93,22 +93,22 @@ Le projet utilise plusieurs bibliothèques Python.
 
 Pour l’extraction et l’enrichissement des données, nous utilisons :
 
-* `pandas` pour créer et manipuler les datasets ;
-* `requests` pour récupérer les données depuis les API ANSSI, MITRE et FIRST EPSS ;
-* `json` pour lire et écrire les fichiers JSON ;
-* `os` et `pathlib` pour gérer les fichiers et les chemins.
+* `pandas` pour créer et manipuler les datasets 
+* `requests` pour récupérer les données depuis les API ANSSI, MITRE et FIRST EPSS 
+* `json` pour lire et écrire les fichiers JSON 
+* `os` et `pathlib` pour gérer les fichiers et les chemins
 
 Pour la lecture du flux RSS et le système d’alerte, nous utilisons :
 
-* `feedparser` pour lire le flux RSS de l’ANSSI ;
-* `re` pour récupérer les identifiants ANSSI dans les liens ;
-* `time` pour faire tourner la veille en boucle avec un délai entre chaque vérification.
+* `feedparser` pour lire le flux RSS de l’ANSSI 
+* `re` pour récupérer les identifiants ANSSI dans les liens 
+* `time` pour faire tourner la veille en boucle avec un délai entre chaque vérification
 
 Pour la partie Machine Learning, nous utilisons :
 
-* `numpy` pour certains calculs numériques ;
-* `scikit-learn` pour préparer les données, entraîner les modèles et les évaluer ;
-* `joblib` et `pickle` pour sauvegarder ou charger les modèles entraînés.
+* `numpy` pour certains calculs numériques 
+* `scikit-learn` pour préparer les données, entraîner les modèles et les évaluer 
+* `joblib` et `pickle` pour sauvegarder ou charger les modèles entraînés
 
 Pour les visualisations, nous utilisons :
 
@@ -129,11 +129,11 @@ La partie Machine Learning se lance depuis le notebook.
 
 Elle permet de :
 
-* charger le dataset ;
-* préparer les variables ;
-* entraîner les modèles ;
-* compléter les valeurs manquantes ;
-* sauvegarder les résultats et les modèles.
+* charger le dataset 
+* préparer les variables 
+* entraîner les modèles 
+* compléter les valeurs manquantes 
+* sauvegarder les résultats et les modèles
 
 ### Lancer une vérification ponctuelle du flux RSS
 
@@ -172,14 +172,14 @@ Pour les modèles supervisés, nous avons utilisé `GradientBoostingRegressor`.
 
 Ce modèle nous sert à prédire des valeurs numériques. Dans notre cas, nous l’avons utilisé pour compléter :
 
-* les valeurs CVSS manquantes ;
-* les valeurs EPSS manquantes.
+* les valeurs CVSS manquantes 
+* les valeurs EPSS manquantes
 
 Pour vérifier si les modèles donnent des résultats corrects, nous avons utilisé trois métriques :
 
-* `MAE` : l’erreur moyenne entre la vraie valeur et la valeur prédite ;
-* `MSE` : une erreur moyenne qui pénalise davantage les grosses erreurs ;
-* `R²` : un score qui permet de voir si le modèle explique bien les données.
+* `MAE` : l’erreur moyenne entre la vraie valeur et la valeur prédite 
+* `MSE` : une erreur moyenne qui pénalise davantage les grosses erreurs 
+* `R²` : un score qui permet de voir si le modèle explique bien les données
 
 L’objectif n’est pas de remplacer les scores officiels, mais plutôt de compléter le dataset quand certaines valeurs sont absentes.
 
@@ -228,10 +228,10 @@ Bonjour,
 
 Le projet peut générer :
 
-* `test.csv` : dataset consolidé ;
-* des fichiers `.pkl` dans `models/` : modèles et encodeurs sauvegardés ;
-* des fichiers `.txt` dans `mails/` : mails d’alerte générés ;
-* `seen_anssi_ids.json` : fichier mémoire des bulletins déjà traités.
+* `test.csv` : dataset consolidé 
+* des fichiers `.pkl` dans `models/` : modèles et encodeurs sauvegardés 
+* des fichiers `.txt` dans `mails/` : mails d’alerte générés 
+* `seen_anssi_ids.json` : fichier mémoire des bulletins déjà traités
 
 ## Limites et améliorations possibles
 
