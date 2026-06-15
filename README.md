@@ -25,31 +25,23 @@ Le projet permet de :
 ## Structure du projet
 
 ```text
-TD_noté/
-│
-├── functions.py
-├── utils.py
-├── alerting.py
-├── application.py
-├── notebook.ipynb
-│
-├── data/
-│   ├── alertes/
-│   ├── avis/
-│   ├── mitre/
-│   ├── first/
-│   └── test.csv
-│
-├── models/
+.
+├── model/
 │   ├── OneHot_encoder.pkl
-│   ├── TfIdf_vectorizer.pkl
-│   ├── model_cvss_realistic.pkl
+│   ├── TfIdf_vectorizer_GBR.pkl
+│   ├── TfIdf_vectorizer_KM.pkl
+│   ├── model_cvss.pkl
 │   ├── model_epss.pkl
-│   ├── cvss_model_columns.pkl
-│   └── epss_model_columns.pkl
+│   └── model_kmean.pkl
 │
-└── mails/
-```
+├── KMeans.ipynb
+├── ML.py
+├── README.md
+├── alert.py
+├── application.py
+├── clusters_kmeans.png
+├── gestionDataframe.py
+└── main.ipynb
 
 ## Rôle des fichiers principaux
 
