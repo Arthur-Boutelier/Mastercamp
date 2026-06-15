@@ -130,7 +130,7 @@ La partie Machine Learning se lance depuis le notebook.
 Elle permet de :
 
 * charger le dataset 
-* préparer les variables 
+* préparer et encoder les variables 
 * entraîner les modèles 
 * compléter les valeurs manquantes 
 * sauvegarder les résultats et les modèles
