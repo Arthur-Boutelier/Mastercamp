@@ -181,7 +181,7 @@ Pour vérifier si les modèles donnent des résultats corrects, nous avons utili
 * `MSE` : une erreur moyenne qui pénalise davantage les grosses erreurs 
 * `R²` : un score qui permet de voir si le modèle explique bien les données
 
-L’objectif n’est pas de remplacer les scores officiels, mais plutôt de compléter le dataset quand certaines valeurs sont absentes.
+L’objectif n’est pas de remplacer les scores officiels mais de compléter certaines valeurs absentes du dataset.
 
 ### Modèle non supervisé
 
