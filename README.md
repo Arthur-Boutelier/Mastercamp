@@ -13,17 +13,19 @@ Le programme récupère des bulletins de sécurité, extrait les CVE associées 
 
 Le projet contient aussi une partie de Data Visualisation afin de mieux visualiser les donnees et une partie de Machine Learning pour compléter certaines valeurs manquantes et créer un score de risque. Enfin, un système d’alerte surveille le flux RSS de l’ANSSI et génère des fichiers `.txt` représentant des emails d’alerte personnalisés.
 
-## Fonctionnalités principales
+## Fonctionnalités
 
-* Extraction des avis et alertes ANSSI.
-* Récupération des CVE associées à chaque bulletin.
-* Enrichissement des CVE avec les données MITRE et FIRST EPSS.
-* Création d’un dataset consolidé au format CSV.
-* Analyse et visualisation des vulnérabilités.
-* Complétion des scores CVSS et EPSS manquants avec des modèles de régression.
-* Création d’un score de risque.
-* Surveillance du flux RSS ANSSI.
-* Génération de fichiers `.txt` simulant des emails d’alerte.
+Le projet permet de :
+
+* récupérer les avis et alertes ANSSI ;
+* extraire les CVE de chaque bulletin ;
+* enrichir les CVE avec les données MITRE et FIRST EPSS ;
+* construire un dataset consolidé au format CSV ;
+* analyser et visualiser les vulnérabilités ;
+* compléter les valeurs CVSS et EPSS manquantes avec des modèles de régression ;
+* détecter de nouveaux bulletins via le flux RSS ANSSI ;
+* générer des alertes personnalisées selon les produits ou éditeurs concernés ;
+* créer des fichiers `.txt` simulant des emails d’alerte.
 
 ## Structure du projet
 
@@ -54,47 +56,50 @@ TD_noté/
 └── mails/
 ```
 
-## Rôle des fichiers
+## Rôle des fichiers principaux
 
 ### `functions.py`
 
-Ce fichier contient les fonctions d’extraction et d’enrichissement des données.
+Contient les fonctions d’extraction et d’enrichissement des données.
 
-Il permet de lire les fichiers ANSSI, d’extraire les CVE, puis de récupérer les informations complémentaires via MITRE et FIRST EPSS.
+Il permet de lire les bulletins ANSSI, récupérer les CVE, puis enrichir chaque CVE avec les données MITRE et FIRST EPSS.
 
 ### `utils.py`
 
-Ce fichier contient les fonctions utilisées pour la partie Machine Learning.
+Contient les fonctions liées à la partie Machine Learning.
 
-Il permet de préparer les données, encoder les variables, entraîner les modèles, compléter les valeurs manquantes et calculer le score de risque.
+Il permet de préparer les données, encoder les variables, entraîner les modèles, évaluer les résultats et compléter les valeurs CVSS et EPSS manquantes.
 
 ### `alerting.py`
 
-Ce fichier contient les fonctions liées aux alertes.
+Contient les fonctions liées aux alertes.
 
-Il permet de lire le flux RSS ANSSI, détecter les nouveaux bulletins, choisir les bons destinataires et générer les mails sous forme de fichiers `.txt`.
+Il permet de lire le flux RSS ANSSI, détecter les nouveaux bulletins, choisir les destinataires concernés et générer les mails sous forme de fichiers `.txt`.
 
 ### `application.py`
 
-Ce fichier permet de lancer la veille en continu.
+Fichier principal permettant de lancer la veille en continu.
 
-Il utilise les fonctions de `alerting.py` pour vérifier régulièrement le flux RSS ANSSI. Lorsqu’un nouveau bulletin est détecté, le programme génère automatiquement les fichiers `.txt` correspondant aux mails d’alerte.
+Il utilise les fonctions de `alerting.py` pour vérifier régulièrement le flux RSS ANSSI et générer automatiquement les fichiers d’alerte lorsqu’un nouveau bulletin est détecté.
 
 ### `notebook.ipynb`
 
-Le notebook présente l’analyse du dataset, les visualisations, la partie Machine Learning, l’évaluation des modèles et la création du score de risque.
+Présente les étapes d’analyse du projet : chargement du dataset, visualisations, Machine Learning, évaluation des modèles et interprétation des résultats.
 
-## Installation
+## Bibliothèques utilisées et installation
 
-Installer les bibliothèques nécessaires :
+Le projet utilise plusieurs bibliothèques Python pour l’extraction des données, l’enrichissement des CVE, l’analyse, le Machine Learning et la génération d’alertes.
+
+### Bibliothèques à installer
+
+Les bibliothèques suivantes doivent être installées avant de lancer le projet :
 
 ```bash
-pip install pandas requests feedparser scikit-learn matplotlib joblib
-```
+pip install pandas numpy requests feedparser scikit-learn matplotlib joblib
 
 ## Utilisation
 
-### Créer le dataset consolidé
+### Générer le dataset consolidé
 
 ```python
 from functions import Initialisation_df
@@ -103,7 +108,7 @@ df = Initialisation_df()
 df.to_csv("./data/test.csv", sep=";", index=False)
 ```
 
-Le fichier `test.csv` contient les données consolidées issues des avis et alertes ANSSI enrichies avec les informations CVE.
+Le fichier `test.csv` contient les bulletins ANSSI enrichis avec les informations CVE.
 
 ### Lancer la partie Machine Learning
 
@@ -112,13 +117,12 @@ La partie Machine Learning se lance depuis le notebook.
 Elle permet de :
 
 * charger le dataset ;
-* préparer les données ;
+* préparer les variables ;
 * entraîner les modèles ;
-* compléter les valeurs CVSS et EPSS manquantes ;
-* calculer un score de risque ;
-* sauvegarder les résultats.
+* compléter les valeurs manquantes ;
+* sauvegarder les résultats et les modèles.
 
-### Lancer une vérification simple du flux RSS
+### Lancer une vérification ponctuelle du flux RSS
 
 ```python
 import alerting
@@ -131,7 +135,7 @@ created_files = alerting.check_rss_and_generate_mails(
 created_files
 ```
 
-Les mails générés sont enregistrés dans le dossier :
+Les fichiers générés sont enregistrés dans :
 
 ```text
 ./mails/
@@ -139,13 +143,11 @@ Les mails générés sont enregistrés dans le dossier :
 
 ### Lancer la veille continue
 
-Le fichier `application.py` permet de lancer le programme en continu :
-
 ```bash
 python application.py
 ```
 
-Le programme vérifie régulièrement le flux RSS ANSSI. Si un nouveau bulletin est détecté, il génère les fichiers `.txt` des mails d’alerte.
+Le programme vérifie régulièrement le flux RSS ANSSI. Lorsqu’un nouveau bulletin est détecté, il génère automatiquement un ou plusieurs fichiers `.txt` correspondant aux mails d’alerte.
 
 ## Machine Learning
 
@@ -155,22 +157,11 @@ Le premier modèle sert à compléter les valeurs CVSS manquantes. Le CVSS est u
 
 Le second modèle sert à compléter les valeurs EPSS manquantes. L’EPSS est une valeur entre 0 et 1 qui représente la probabilité qu’une vulnérabilité soit exploitée.
 
-Ces modèles ne remplacent pas les scores officiels. Ils servent surtout à compléter le dataset lorsque certaines valeurs sont manquantes.
+Ces modèles ne remplacent pas les scores officiels. Ils permettent surtout de compléter le dataset lorsque certaines informations sont absentes.
 
-## Score de risque
+## Système d’alerte
 
-Le score de risque combine le CVSS complété et l’EPSS complété :
-
-```python
-risk_score = 0.6 * (CVSS_completed / 10) + 0.4 * EPSS_completed
-```
-
-Le CVSS indique la gravité technique.
-L’EPSS indique la probabilité d’exploitation.
-
-## Alertes personnalisées
-
-Les destinataires sont choisis selon les produits concernés.
+Le système d’alerte repose sur un dictionnaire associant certains produits ou éditeurs à des destinataires.
 
 Exemple :
 
@@ -186,10 +177,10 @@ destinataires_par_produit = {
 }
 ```
 
-Si un bulletin concerne Microsoft, les destinataires liés à Microsoft sont alertés.
-Si aucun produit ne correspond, le mail est envoyé au destinataire par défaut.
+Si un nouveau bulletin concerne Microsoft, les destinataires associés à Microsoft sont alertés.
+Si aucun produit ne correspond, le destinataire par défaut est utilisé.
 
-Dans cette version, les emails ne sont pas réellement envoyés. Le programme crée seulement des fichiers `.txt` avec une structure de mail classique :
+Dans cette version, les emails ne sont pas réellement envoyés. Le programme génère uniquement des fichiers `.txt` avec une structure de mail classique :
 
 ```text
 To: destinataire
@@ -205,8 +196,6 @@ Bonjour,
 Le projet peut générer :
 
 * `test.csv` : dataset consolidé ;
-* `dataset_completed_final.csv` : dataset enrichi avec les valeurs complétées ;
-* `final_risk_prioritization.csv` : fichier utilisé pour prioriser les vulnérabilités ;
 * des fichiers `.pkl` dans `models/` : modèles et encodeurs sauvegardés ;
 * des fichiers `.txt` dans `mails/` : mails d’alerte générés ;
 * `seen_anssi_ids.json` : fichier mémoire des bulletins déjà traités.
@@ -214,8 +203,11 @@ Le projet peut générer :
 ## Limites et améliorations possibles
 
 * Ajouter l’envoi réel des emails.
-* Ajouter plus de produits surveillés.
+* Ajouter davantage de produits surveillés.
 * Améliorer la gestion des erreurs API.
-* Ajouter les résultats du clustering dans les mails.
-* Ajouter directement les scores calculés par les modèles dans les alertes.
+* Intégrer les résultats du clustering dans les mails d’alerte.
+* Ajouter les scores complétés par les modèles directement dans les notifications.
 * Déployer la veille comme un service automatique.
+
+
+
